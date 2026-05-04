@@ -27,7 +27,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/winsage/winsage-agent.git"
+    "url": "https://github.com/wsxyy1145/winsage-agent.git"
   },
   "engines": {
     "node": ">=14.0.0",
