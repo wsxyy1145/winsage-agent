@@ -23,25 +23,66 @@
 
 ## 安装
 
-### 🚀 一键安装（推荐）
+### 🚀 Cargo 安装（跨平台，推荐）
 
-只需一条命令即可完成所有安装步骤：
+适用于 Windows、macOS、Linux：
 
 ```bash
-npm install -g winsage-agent
+cargo install --git https://github.com/wsxyy1145/winsage-agent.git
 ```
-
-安装程序会自动：
-- ✓ 检测并安装 Rust 工具链
-- ✓ 检查 Visual Studio Build Tools
-- ✓ 可选部署 PostgreSQL（使用 Docker）
-- ✓ 编译 WinSage 项目
-- ✓ 创建全局 CLI 命令
 
 安装完成后即可使用：
 ```bash
 winsage chat
 ```
+
+**优点**: 
+- ✅ 跨平台支持（Windows/macOS/Linux）
+- ✅ 自动获取最新版本
+- ✅ 一行命令完成
+
+---
+
+### 📦 GitHub Releases 下载（最快，无需编译）
+
+访问最新 Release 页面下载预编译二进制：
+https://github.com/wsxyy1145/winsage-agent/releases/latest
+
+- **Windows**: 下载 `winsage-windows-x64.exe`
+- **macOS**: 下载 `winsage-macos-x64`
+- **Linux**: 下载 `winsage-linux-x64`
+
+---
+
+### 🔧 Git Clone + 本地编译（开发用）
+
+```bash
+git clone https://github.com/wsxyy1145/winsage-agent.git
+cd winsage-agent
+cargo build --release
+
+# 运行
+./target/release/winsage chat
+```
+
+---
+
+### 系统要求
+
+#### Windows
+- Windows 10/11 专业版或企业版（用于 Windows Sandbox）
+- Rust 工具链 (MSVC)
+- Visual Studio Build Tools 2019+
+
+#### macOS (未来支持)
+- macOS 10.15+
+- Rust 工具链
+- Xcode Command Line Tools
+
+#### Linux (未来支持)
+- Ubuntu 18.04+ / CentOS 7+
+- Rust 工具链
+- OpenSSL 开发库
 
 ---
 
