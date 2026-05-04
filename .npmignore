@@ -1,0 +1,56 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Rust 编译产物
+target/
+**/*.rs.bk
+*.pdb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 环境文件
+.env
+.env.local
+.env.example
+
+# 日志
+*.log
+
+# 临时文件
+tmp/
+temp/
+
+# 文档（保留主要的README）
+DELIVERY.md
+PROJECT_SUMMARY.md
+EXAMPLES.md
+QUICKSTART.md
+COMPLETE_INSTALL_SUMMARY.md
+PUBLISH_TO_NPM.md
+
+# 脚本和演示
+demo.ps1
+setup.ps1
+
+# Docker
+docker-compose.yml
+Dockerfile
+
+# 迁移文件（已包含在源码中）
+migrations/
+
+# 测试
+tests/
+*.test.js
+*.spec.js
+
+# CI/CD
+.github/
+.gitlab-ci.yml

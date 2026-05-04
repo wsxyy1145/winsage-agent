@@ -1,0 +1,62 @@
+[package]
+name = "winsage"
+version = "0.1.0"
+edition = "2021"
+authors = ["WinSage Team"]
+description = "Windows Terminal AI Agent with sandbox isolation and multi-model support"
+license = "MIT"
+
+[dependencies]
+# 异步运行时
+tokio = { version = "1.35", features = ["full"] }
+
+# CLI框架
+clap = { version = "4.4", features = ["derive"] }
+
+# HTTP客户端
+reqwest = { version = "0.11", features = ["json", "stream"] }
+
+# 序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# 数据库
+sqlx = { version = "0.7", features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono"] }
+
+# 日志
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# 配置管理
+config = "0.13"
+
+# 工具库
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+futures = "0.3"
+async-stream = "0.3"
+thiserror = "1.0"
+anyhow = "1.0"
+regex = "1.10"
+
+# 交互式输入
+dialoguer = "0.11"
+console = "0.15"
+
+# 环境变量
+dotenvy = "0.15"
+
+# 目录处理
+dirs = "5.0"
+
+# TOML 支持
+toml = "0.8"
+
+# Async trait
+async-trait = "0.1"
+
+# Stream support
+tokio-stream = "0.1"
+
+[dev-dependencies]
+tokio-test = "0.4"

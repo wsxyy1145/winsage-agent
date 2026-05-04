@@ -1,0 +1,21 @@
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 环境文件
+.env
+.env.local
+
+# 日志
+*.log
+
+# 临时文件
+tmp/
+temp/

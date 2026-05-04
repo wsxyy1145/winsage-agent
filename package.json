@@ -1,0 +1,41 @@
+{
+  "name": "winsage-agent",
+  "version": "0.1.0",
+  "description": "Windows Terminal AI Agent - One-command installation for WinSage",
+  "main": "index.js",
+  "bin": {
+    "winsage": "./bin/winsage.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js --non-interactive",
+    "setup": "node scripts/setup-wizard.js",
+    "start": "winsage",
+    "chat": "winsage chat",
+    "config": "winsage config",
+    "sandbox": "winsage sandbox"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "windows",
+    "terminal",
+    "cli",
+    "chatbot",
+    "sandbox"
+  ],
+  "author": "WinSage Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/winsage/winsage-agent.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "os": [
+    "win32"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}

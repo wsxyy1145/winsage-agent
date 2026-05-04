@@ -1,0 +1,56 @@
+[general]
+default_model = "gpt-4"
+temperature = 0.7
+max_tokens = 4096
+streaming = true
+
+[models.openai]
+api_key = ""
+base_url = "https://api.openai.com/v1"
+default_model = "gpt-4"
+
+[models.anthropic]
+api_key = ""
+base_url = "https://api.anthropic.com/v1"
+default_model = "claude-3-opus-20240229"
+
+[models.azure]
+api_key = ""
+endpoint = ""
+deployment = "gpt-4"
+api_version = "2024-02-15-preview"
+
+[models.ollama]
+base_url = "http://localhost:11434"
+model = "llama2"
+
+[models.deepseek]
+api_key = ""
+base_url = "https://api.deepseek.com/v1"
+default_model = "deepseek-chat"
+
+[models.moonshot]
+api_key = ""
+base_url = "https://api.moonshot.cn"
+default_model = "moonshot-v1-8k"
+
+[models.qwen]
+api_key = ""
+base_url = "https://dashscope.aliyuncs.com"
+default_model = "qwen-turbo"
+
+[models.doubao]
+api_key = ""
+base_url = "https://ark.cn-beijing.volces.com"
+default_model = "ep-xxxxx"
+
+[memory]
+database_url = "postgresql://postgres:postgres@localhost/winsage"
+enable_vector_search = false
+max_history_length = 100
+
+[sandbox]
+enabled = true
+auto_cleanup = true
+timeout_seconds = 300
+shared_folder = ""
