@@ -1,0 +1,180 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v0.1.0)'
+        required: true
+        type: string
+
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: winsage
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact_name: winsage.exe
+            asset_name: winsage-windows-x64.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact_name: winsage
+            asset_name: winsage-macos-x64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact_name: winsage
+            asset_name: winsage-macos-arm64
+          - os: ubuntu-20.04
+            target: x86_64-unknown-linux-gnu
+            artifact_name: winsage
+            asset_name: winsage-linux-x64
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: ${{ matrix.target }}
+
+    - name: Cache cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Cache cargo index
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Cache cargo build
+      uses: actions/cache@v3
+      with:
+        path: target
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pkg-config libssl-dev
+
+    - name: Build
+      run: cargo build --release --target ${{ matrix.target }} --verbose
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.asset_name }}
+        path: target/${{ matrix.target }}/release/${{ matrix.artifact_name }}
+        retention-days: 5
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Get version
+      id: get_version
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create release archives
+      run: |
+        cd artifacts
+        # Create zip files for each platform
+        for dir in */; do
+          cd "$dir"
+          zip "../${dir%/}.zip" *
+          cd ..
+        done
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+        echo "## What's Changed" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: WinSage ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## 🎉 WinSage ${{ steps.get_version.outputs.VERSION }}
+
+          ${{ steps.changelog.outputs.CHANGELOG }}
+
+          ## 📦 Installation
+
+          ### Windows
+          ```powershell
+          # Download winsage-windows-x64.exe
+          # Rename to winsage.exe and add to PATH
+          .\winsage.exe chat
+          ```
+
+          ### macOS (Intel)
+          ```bash
+          chmod +x winsage-macos-x64
+          ./winsage-macos-x64 chat
+          ```
+
+          ### macOS (Apple Silicon)
+          ```bash
+          chmod +x winsage-macos-arm64
+          ./winsage-macos-arm64 chat
+          ```
+
+          ### Linux
+          ```bash
+          chmod +x winsage-linux-x64
+          ./winsage-linux-x64 chat
+          ```
+
+          ### Or use Cargo (all platforms)
+          ```bash
+          cargo install --git https://github.com/wsxyy1145/winsage-agent.git
+          ```
+
+          ## 🔗 Links
+          - [Documentation](https://github.com/wsxyy1145/winsage-agent#readme)
+          - [Installation Guide](https://github.com/wsxyy1145/winsage-agent/blob/master/CROSS_PLATFORM_INSTALL.md)
+        files: |
+          artifacts/*.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
